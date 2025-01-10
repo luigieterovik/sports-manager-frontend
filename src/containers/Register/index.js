@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import * as S from './styles'
+import { useNavigate } from "react-router-dom";
+import * as S from "./styles";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -10,23 +11,77 @@ const Register = () => {
   });
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [redirecting, setRedirecting] = useState("");
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { fullName, email, password, confirmPassword } = formData;
 
     if (!fullName || !email || !password || !confirmPassword) {
       setError("Por favor, preencha todos os campos.");
-    } else if (password !== confirmPassword) {
+      setSuccess("");
+      return;
+    }
+
+    if (password !== confirmPassword) {
       setError("As senhas não coincidem.");
-    } else {
-      setError("");
-      alert(`Bem-vindo(a), ${fullName}!`);
+      setSuccess("");
+      return;
+    }
+
+    setError("");
+    setSuccess("");
+    setRedirecting("");
+
+    try {
+      const response = await fetch("http://localhost:8080/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: fullName, email, password }),
+      });
+
+      const contentType = response.headers.get("Content-Type");
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        setError(`${errorMessage}`);
+        return;
+      }
+
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        setSuccess("Usuário registrado com sucesso!");
+        setFormData({
+          fullName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+
+        setTimeout(() => {
+          setSuccess("");
+          setRedirecting("Redirecionando para o login...");
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
+        }, 2000);
+      } else {
+        const errorMessage = await response.text();
+        setError(`Erro ao registrar usuário: ${errorMessage}`);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Erro ao conectar com o servidor.");
     }
   };
 
@@ -65,6 +120,8 @@ const Register = () => {
           />
           <S.Button type="submit">Registrar</S.Button>
           {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
+          {success && <S.SuccessMessage>{success}</S.SuccessMessage>}
+          {redirecting && <S.InfoMessage>{redirecting}</S.InfoMessage>}
         </form>
       </S.RegisterBox>
     </S.Container>

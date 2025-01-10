@@ -56,3 +56,18 @@ export const ErrorMessage = styled.p`
   font-size: 0.875rem;
   margin-top: 0.5rem;
 `;
+
+export const SuccessMessage = styled.p`
+  color: green;
+  font-size: 14px;
+  margin-top: 10px;
+`;
+
+export const InfoMessage = styled.div`
+  color: #333;
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: #f39c12;
+`;
