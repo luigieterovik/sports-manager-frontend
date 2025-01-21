@@ -3,27 +3,22 @@ import { useNavigate } from "react-router-dom";
 import * as S from "./styles";
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [redirecting, setRedirecting] = useState("");
 
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { fullName, email, password, confirmPassword } = formData;
+
+    const form = e.target;
+    const formData = new FormData(form); // FormData permite criar um objeto com os dados de um formulário
+
+    const fullName = formData.get("fullName");
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirmPassword");
 
     if (!fullName || !email || !password || !confirmPassword) {
       setError("Por favor, preencha todos os campos.");
@@ -50,23 +45,9 @@ const Register = () => {
         body: JSON.stringify({ name: fullName, email, password }),
       });
 
-      const contentType = response.headers.get("Content-Type");
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        setError(`${errorMessage}`);
-        return;
-      }
-
-      if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
+      if (response.ok) {
         setSuccess("Usuário registrado com sucesso!");
-        setFormData({
-          fullName: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        });
+        form.reset();
 
         setTimeout(() => {
           setSuccess("");
@@ -77,7 +58,7 @@ const Register = () => {
         }, 2000);
       } else {
         const errorMessage = await response.text();
-        setError(`Erro ao registrar usuário: ${errorMessage}`);
+        setError(errorMessage || "Erro ao registrar usuário.");
       }
     } catch (err) {
       console.error(err);
@@ -90,33 +71,13 @@ const Register = () => {
       <S.RegisterBox>
         <S.Title>Registrar</S.Title>
         <form onSubmit={handleSubmit}>
-          <S.Input
-            type="text"
-            name="fullName"
-            placeholder="Nome Completo"
-            value={formData.fullName}
-            onChange={handleChange}
-          />
-          <S.Input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <S.Input
-            type="password"
-            name="password"
-            placeholder="Senha"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          <S.Input type="text" name="fullName" placeholder="Nome Completo" />
+          <S.Input type="email" name="email" placeholder="Email" />
+          <S.Input type="password" name="password" placeholder="Senha" />
           <S.Input
             type="password"
             name="confirmPassword"
             placeholder="Repetir Senha"
-            value={formData.confirmPassword}
-            onChange={handleChange}
           />
           <S.Button type="submit">Registrar</S.Button>
           {error && <S.ErrorMessage>{error}</S.ErrorMessage>}

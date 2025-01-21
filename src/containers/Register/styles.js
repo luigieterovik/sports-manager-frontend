@@ -13,7 +13,7 @@ export const RegisterBox = styled.div`
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 350px;
+  width: 50vw;
   text-align: center;
 `;
 
@@ -54,7 +54,7 @@ export const Button = styled.button`
 export const ErrorMessage = styled.p`
   color: #d9534f;
   font-size: 0.875rem;
-  margin-top: 0.5rem;
+  margin-top: 15px;
 `;
 
 export const SuccessMessage = styled.p`
