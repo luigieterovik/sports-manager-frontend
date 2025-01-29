@@ -1,19 +1,62 @@
-import React, { useState, useEffect, useContext } from 'react'
-
-import * as S from './styles'
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import * as S from "./styles";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const [error, setError] = useState("");
+  const [redirecting, setRedirecting] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (email === "" || password === "") {
       setError("Por favor, preencha todos os campos.");
-    } else {
-      setError("");
-      alert(`Bem-vindo, ${email}!`);
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:8080/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      console.log(response);
+
+      if (response.ok) {
+        const data = await response.json();
+        const userName = data.name;
+        const token = data.token;
+
+        localStorage.setItem("SportsManager:userName", userName);
+        localStorage.setItem("SportsManager:token", token);
+
+        setTimeout(() => {
+          setRedirecting("Login bem-sucedido, redirecionando...");
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
+        }, 2000);
+
+        console.log("Login bem-sucedido, token:", token);
+      } else {
+        console.log("Erro no login:", await response.text());
+      }
+    } catch (err) {
+      setError("Erro ao conectar ao servidor. Tente novamente mais tarde.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -27,15 +70,20 @@ const Login = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
           />
           <S.Input
             type="password"
             placeholder="Senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
           />
-          <S.Button type="submit">Entrar</S.Button>
+          <S.Button type="submit" disabled={loading}>
+            {loading ? "Carregando..." : "Entrar"}
+          </S.Button>
           {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
+          {redirecting && <S.InfoMessage>{redirecting}</S.InfoMessage>}
         </form>
       </S.LoginBox>
     </S.Container>

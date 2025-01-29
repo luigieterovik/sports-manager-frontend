@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
@@ -55,4 +55,13 @@ export const ErrorMessage = styled.p`
   color: #d9534f;
   font-size: 0.875rem;
   margin-top: 0.5rem;
+`;
+
+export const InfoMessage = styled.div`
+  color: #333;
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: green;
 `;
