@@ -6,6 +6,7 @@ export const Container = styled.div`
   align-items: center;
   padding: 20px;
   background-color: #f9f9f9;
+  height: 100vh;
 `;
 
 export const Title = styled.h1`
@@ -14,6 +15,20 @@ export const Title = styled.h1`
   color: #333;
   margin-bottom: 40px;
   text-align: center;
+`;
+export const MyReservations = styled.button`
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 20px;
+  border: none;
+  padding: 20px 40px;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 export const CourtList = styled.div`
@@ -80,6 +95,23 @@ export const ReserveButton = styled.button`
 
   &:hover {
     background-color: #005bb5;
+    transform: scale(1.05);
+  }
+`;
+
+export const CancelReservationButton = styled.button`
+  margin-top: 10px;
+  padding: 12px 25px;
+  background-color: red;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
     transform: scale(1.05);
   }
 `;

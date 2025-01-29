@@ -45,7 +45,7 @@ const Login = () => {
         setTimeout(() => {
           setRedirecting("Login bem-sucedido, redirecionando...");
           setTimeout(() => {
-            navigate("/login");
+            navigate("/");
           }, 2000);
         }, 2000);
 

@@ -22,11 +22,24 @@ export const CourtList = styled.div`
   gap: 30px;
   width: 100%;
 `;
+export const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Garantir que o modal fique acima de outros elementos */
+`;
 
 export const CourtCard = styled.div`
   padding: 20px;
   background: #fff;
   border-radius: 12px;
+  margin-bottom: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
@@ -95,5 +108,20 @@ export const ReserveButton = styled.button`
   &:hover {
     background-color: #005bb5;
     transform: scale(1.05);
+  }
+`;
+
+export const MyReservations = styled.button`
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 20px;
+  border: none;
+  padding: 20px 40px;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
   }
 `;

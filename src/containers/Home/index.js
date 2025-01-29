@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
-import * as S from "./styles"; // Certifique-se de que os estilos estão corretos
+import { useNavigate } from "react-router-dom";
+import * as S from "./styles";
+import ReservaModal from "./Modal";
 
 function AvailableCourts() {
   const [courts, setCourts] = useState([]);
-  const [selectedCourt, setSelectedCourt] = useState(null); // Quadra atualmente selecionada para reserva
-  const [reservationDate, setReservationDate] = useState(""); // Data da reserva
+  const [prices, setPrices] = useState([]);
+  const [selectedCourt, setSelectedCourt] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState(null);
+
+  const navigate = useNavigate();
+
+  console.log(courts);
+  console.log(prices);
 
   useEffect(() => {
     const fetchCourts = async () => {
@@ -25,62 +34,40 @@ function AvailableCourts() {
       }
     };
     fetchCourts();
-  }, []);
 
-  const handleReserve = async (courtId) => {
-    if (!reservationDate) {
-      alert("Por favor, selecione uma data para a reserva.");
-      return;
-    }
-
-    const newReservation = {
-      disponibilidadeId: 1,
-      data: reservationDate,
-
-      quadraId: courtId,
-      precoId: 1
-    };
-
-    try {
-      const response = await fetch(
-        "http://localhost:8080/reservation",
-        {
-          method: "POST",
+    const fetchPrices = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/prices/findAll", {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem(
               "SportsManager:token"
             )}`,
           },
-          body: JSON.stringify(newReservation),
-        }
-      );
-
-      if (response.ok) {
-        alert("Reserva realizada com sucesso!");
-      } else {
-        alert("Erro ao realizar a reserva. Tente novamente.");
+        });
+        const pricesData = await response.json();
+        setPrices(pricesData);
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
-      alert("Erro ao realizar a reserva. Tente novamente.");
-    }
-  };
-
-  const handleCourtSelection = (courtId) => {
-    setSelectedCourt(courtId); // Marca a quadra como selecionada
-  };
+    };
+    fetchPrices();
+  }, []);
 
   return (
     <S.Container>
       <S.Title>Quadras Disponíveis</S.Title>
+      <S.MyReservations onClick={() => navigate("/reservations")}>
+        Minhas reservas
+      </S.MyReservations>
       {courts.map((court) => (
         <S.CourtCard
           key={court.id}
-          onClick={() => handleCourtSelection(court.id)} // Marca a quadra selecionada ao clicar
+          onClick={() => setSelectedCourt(court.id)}
           style={{
-            border: selectedCourt === court.id ? "2px solid #00bfff" : "", // Destaca a quadra selecionada
-            backgroundColor: selectedCourt === court.id ? "#e0f7ff" : "", // Muda a cor de fundo da quadra selecionada
+            border: selectedCourt === court.id ? "2px solid #00bfff" : "",
+            backgroundColor: selectedCourt === court.id ? "#e0f7ff" : "",
           }}
         >
           <S.CourtType>{court.tipo}</S.CourtType>
@@ -89,36 +76,26 @@ function AvailableCourts() {
             {court.bairro}, {court.cidade} - {court.uf}
           </S.CourtInfo>
           <S.CourtInfo>
-            <strong>Empresa:</strong> {court.enterprise.nome} (
-            {court.enterprise.telefone})
+            <strong>Empresa:</strong> {court.enterprise.nome}
           </S.CourtInfo>
-
-          {/* Campo de Data */}
           <S.CourtInfo>
-            <label htmlFor="reservationDate">Data:</label>
-            <input
-              type="date"
-              id="reservationDate"
-              onChange={(e) => setReservationDate(e.target.value)}
-            />
+            <strong>Telefone:</strong> {court.enterprise.telefone}
           </S.CourtInfo>
-
-          {/* Preço por hora */}
           <S.CourtInfo>
-            <strong>Preço:</strong> R$ {court.price},00 / hora
+            <strong>Email:</strong> {court.enterprise.email}
           </S.CourtInfo>
 
-          {/* Exibindo o valor total */}
-          <S.CourtInfo>
-            <strong>Valor Total:</strong> R$ {court.price},00
-          </S.CourtInfo>
-
-          {/* Botão de Reservar (só aparece para a quadra selecionada) */}
           {selectedCourt === court.id && (
             <S.ReserveButton
               onClick={(e) => {
-                e.stopPropagation(); // Impede que o clique no botão acione o evento de seleção da quadra
-                handleReserve(court.id); // Realiza a reserva
+                e.stopPropagation();
+                console.log("Reserva button clicked!");
+                setModalOpen(true);
+                setSelectedReservation({
+                  court,
+                  empresa: court.enterprise,
+                  periodo: prices.find((price) => price.court_id === court.id),
+                });
               }}
             >
               Reservar
@@ -126,6 +103,17 @@ function AvailableCourts() {
           )}
         </S.CourtCard>
       ))}
+      {modalOpen && selectedReservation && (
+        <ReservaModal
+          courtData={courts.filter((court) => court.id === selectedCourt)}
+          prices={prices}
+          onClose={() => setModalOpen(false)}
+          onConfirm={(reservaId) => {
+            console.log(`Reserva confirmada: ${reservaId}`);
+            setModalOpen(false);
+          }}
+        />
+      )}
     </S.Container>
   );
 }
