@@ -23,7 +23,7 @@ const ReservasList = () => {
     const fetchReservations = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/reservation/listByUser",
+          "https://sports-manager-backend-production.up.railway.app/reservation/listByUser",
           {
             method: "GET",
             headers: {
@@ -73,7 +73,7 @@ const ReservasList = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/reservation/${reservationId}`,
+        `https://sports-manager-backend-production.up.railway.app/reservation/${reservationId}`,
         {
           method: "DELETE",
           headers: {

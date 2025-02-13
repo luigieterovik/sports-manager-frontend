@@ -18,7 +18,7 @@ function AvailableCourts() {
   useEffect(() => {
     const fetchCourts = async () => {
       try {
-        const response = await fetch("http://localhost:8080/courts/findAll", {
+        const response = await fetch("https://sports-manager-backend-production.up.railway.app/courts/findAll", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -37,7 +37,7 @@ function AvailableCourts() {
 
     const fetchPrices = async () => {
       try {
-        const response = await fetch("http://localhost:8080/prices/findAll", {
+        const response = await fetch("https://sports-manager-backend-production.up.railway.app/prices/findAll", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

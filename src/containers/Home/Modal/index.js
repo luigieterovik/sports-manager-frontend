@@ -60,7 +60,7 @@ const ReservaModal = ({ courtData, prices, onClose, onConfirm }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/reservation", {
+      const response = await fetch("https://sports-manager-backend-production.up.railway.app/reservation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
