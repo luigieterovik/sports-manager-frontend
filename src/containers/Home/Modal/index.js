@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import * as S from "./styles";
 
 const ReservaModal = ({ courtData, prices, onClose, onConfirm }) => {
+  useEffect(() => {
+    console.log("CourtData" + courtData);
+  }, [courtData]);
+
   const [reservationDate, setReservationDate] = useState("");
   const [reservationTime, setReservationTime] = useState("");
   const [reservationPriceId, setReservationPriceId] = useState(null); // Estado para armazenar o ID do preço
@@ -60,16 +64,19 @@ const ReservaModal = ({ courtData, prices, onClose, onConfirm }) => {
     };
 
     try {
-      const response = await fetch("https://sports-manager-backend-production.up.railway.app/reservation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem(
-            "SportsManager:token"
-          )}`,
-        },
-        body: JSON.stringify(newReservation),
-      });
+      const response = await fetch(
+        "https://sports-manager-backend-production.up.railway.app/reservation",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem(
+              "SportsManager:token"
+            )}`,
+          },
+          body: JSON.stringify(newReservation),
+        }
+      );
 
       if (response.ok) {
         alert("Reserva confirmada com sucesso!");
