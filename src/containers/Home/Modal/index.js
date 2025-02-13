@@ -3,7 +3,7 @@ import * as S from "./styles";
 
 const ReservaModal = ({ courtData, prices, onClose, onConfirm }) => {
   useEffect(() => {
-    console.log("CourtData" + courtData);
+    console.log("CourtData: " + JSON.stringify(courtData, null, 2));
   }, [courtData]);
 
   const [reservationDate, setReservationDate] = useState("");
