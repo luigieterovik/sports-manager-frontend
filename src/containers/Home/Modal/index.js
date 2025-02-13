@@ -34,6 +34,8 @@ const ReservaModal = ({ courtData, prices, onClose, onConfirm }) => {
       (day) => day.weekDay.dia === dayName
     );
 
+    console.log(filteredDayPrices)
+
     setDayPrices(filteredDayPrices);
   };
 
