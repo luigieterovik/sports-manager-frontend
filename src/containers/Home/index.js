@@ -89,7 +89,7 @@ function AvailableCourts() {
             <S.ReserveButton
               onClick={(e) => {
                 e.stopPropagation();
-                console.log("Reserva button clicked!");
+                console.log("Reserva button clicked! Court ID: ", selectedCourt);
                 setModalOpen(true);
                 setSelectedReservation({
                   court,
