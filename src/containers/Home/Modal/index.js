@@ -63,6 +63,8 @@ const ReservaModal = ({ courtData, prices, onClose, onConfirm }) => {
       precoId: reservationPriceId,
     };
 
+    console.log(newReservation);
+
     try {
       const response = await fetch(
         "https://sports-manager-backend-production.up.railway.app/reservation",
