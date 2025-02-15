@@ -6,9 +6,10 @@ const ReservaModal = ({ courtData, prices, onClose, onConfirm }) => {
     console.log("CourtData: " + JSON.stringify(courtData, null, 2));
   }, [courtData]);
 
+
   const [reservationDate, setReservationDate] = useState("");
   const [reservationTime, setReservationTime] = useState("");
-  const [reservationPriceId, setReservationPriceId] = useState(null); // Estado para armazenar o ID do preço
+  const [reservationPriceId, setReservationPriceId] = useState(null);
   const [dayPrices, setDayPrices] = useState([]);
   const [showTotal, setShowTotal] = useState(false);
 
@@ -34,8 +35,6 @@ const ReservaModal = ({ courtData, prices, onClose, onConfirm }) => {
       (day) => day.weekDay.dia === dayName
     );
 
-    console.log(filteredDayPrices)
-
     setDayPrices(filteredDayPrices);
   };
 
@@ -43,21 +42,20 @@ const ReservaModal = ({ courtData, prices, onClose, onConfirm }) => {
     const selectedTime = e.target.value;
 
     setReservationTime(selectedTime);
-    setShowTotal(true); // Mostrar o valor total quando o horário for selecionado
+    setShowTotal(true); 
 
-    // Encontrar o ID do preço baseado no horário selecionado
     const selectedPrice = dayPrices.find(
       (price) => price.period.horario_inicio === selectedTime
     );
 
     console.log(selectedPrice);
     if (selectedPrice) {
-      setReservationPriceId(selectedPrice.id); // Armazenar o ID do preço
+      setReservationPriceId(selectedPrice.id); 
     }
   };
 
   const confirmReservation = async () => {
-    if (!reservationTime || !reservationPriceId) return; // Verificar se o preço foi selecionado
+    if (!reservationTime || !reservationPriceId) return;
 
     const newReservation = {
       data: reservationDate,

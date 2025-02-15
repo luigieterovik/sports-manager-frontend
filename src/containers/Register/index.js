@@ -13,7 +13,7 @@ const Register = () => {
     e.preventDefault();
 
     const form = e.target;
-    const formData = new FormData(form); // FormData permite criar um objeto com os dados de um formulário
+    const formData = new FormData(form);
 
     const fullName = formData.get("fullName");
     const email = formData.get("email");
